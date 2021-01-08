@@ -1,0 +1,23 @@
+NAME: JIAXUAN XUE
+EMAIL: nimbusxue1015@g.ucla.edu
+UID: 705142227
+
+Included in the tarball are:
+    README
+    Makefile
+    lab4c_tcp.c
+    lab4c_tls.c
+
+lab4c_tcp: Obtain the host name, port # and server status URL for the TCP logging server.
+lab4c_tls.c: Obtain the host name, port # and server status URL for the TLS logging server.
+
+Makefile:
+    default: build both versions of the program
+    clean ... delete all programs and output created by the Makefile and restore the directory to its freshly untarred state.
+    dist ... create the deliverable tarball.
+
+README: descriptions of each of the included files.
+
+
+Since my beaglebone broke when I tried to reflash it into debian version of 8.7, I chose to cooperate with Felix Gan(Chenye Gan) and tested my project on his beaglebone environment.
+

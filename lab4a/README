@@ -1,0 +1,29 @@
+NAME: JIAXUAN XUE
+EMAIL: nimbusxue1015@g.ucla.edu
+ID: 705142227
+
+
+Included files:
+my_beaglebone.jpg: a selfie of me holding my assembled beaglebone
+
+connected.png: a screen shot from a USB terminal command session connected to your system, showing that you gave it a name and configured network access.
+
+copy.png:a screen shot from a local session in which you copy a hello world program from your laptop/desktop to your Beaglebone.
+
+build_run.png:a screen shot from a WIFI SSH session in which you build and run a trivial (hello world) program.
+
+git.png: a screen shot from a WIFI SSH session in which you install git and clone a repository.
+
+
+
+Makefile: a Makefile to build the program and the tarball. 
+It supports the following command:
+default: create the distribution tarball
+clean: remove all the files created by the Makefile
+dist: create the distribution tarball
+
+
+README: a README file with identification information, a description of the included files and testing methodology.
+
+Testing methodology: uses both the sanity-check script and manual test to check the appropriate results as expected.
+

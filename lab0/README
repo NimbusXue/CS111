@@ -1,0 +1,35 @@
+NAME: JIAXUAN XUE
+EMAIL: nimbusxue1015@g.ucla.edu
+ID: 705142227
+
+Included files:
+
+lab0.c: a single C source module that copies its standard input to its standard output.
+
+Makefile: a Makefile to build the program and the tarball.
+
+backtrace.png: a screenshot that shows a segfault and associated stack-trace
+
+breakpoint.png: a screenshot that shows a breakpoint and variable inspection
+
+README: a README file with identification information, a description of the included files and the smoke-test cases in the check target
+
+check.sh: a script written to do the smoke tests
+
+
+Smoke-test cases:
+
+Test case 1: check the basic function match between stdin and stdout.
+
+Test case 2: check the correct behavior for non-exist input file, with exit code 2.
+
+Test case 3: check the correct behavior for non-writable output file, with exit code 3.
+
+Test case 4: check the correct behavior for an unrecognized argument, with exit code 1.
+
+Test case 5: check the correct behavior for a segmentation fault, with exit code 4.
+
+
+
+
+

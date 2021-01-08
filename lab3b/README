@@ -1,0 +1,23 @@
+NAME: JIAXUAN XUE,Felix Gan
+EMAIL: nimbusxue1015@g.ucla.edu,felixgan@g.ucla.edu
+UID: 705142227,205127385
+
+Included in the tarball are:
+    README
+    Makefile
+    lab3b.py
+    
+
+lab3b.py: the lab file. It analyzes CSV and outputs inconsistencies. 
+
+Makefile:
+    default: creates lab3b executable
+    dist: create the tarball with first UID
+    clean: returns to untarred state
+
+
+
+--- Remarks ---
+
+The most difficult part, by far, was understanding the file system. It was rather interesting to find all the inconsistencies and potential errors. 
+

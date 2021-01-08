@@ -1,0 +1,403 @@
+Total: 376 samples
+     301  80.1%  80.1%      376 100.0% routine
+      16   4.3%  84.3%       72  19.1% SortedList_insert
+      10   2.7%  87.0%       10   2.7% ?? /usr/src/debug////////glibc-2.17-c758a686/string/../sysdeps/x86_64/multiarch/strcmp-sse42.S:1734
+      10   2.7%  89.6%       10   2.7% _init
+       8   2.1%  91.8%        8   2.1% ?? /usr/src/debug////////glibc-2.17-c758a686/string/../sysdeps/x86_64/multiarch/strcmp-sse42.S:204
+       6   1.6%  93.4%        6   1.6% ?? /usr/src/debug////////glibc-2.17-c758a686/string/../sysdeps/x86_64/multiarch/strcmp-sse42.S:1734
+       5   1.3%  94.7%        5   1.3% ?? /usr/src/debug////////glibc-2.17-c758a686/string/../sysdeps/x86_64/multiarch/strcmp-sse42.S:161
+       5   1.3%  96.0%        5   1.3% ?? /usr/src/debug////////glibc-2.17-c758a686/string/../sysdeps/x86_64/multiarch/strcmp-sse42.S:165
+       5   1.3%  97.3%        5   1.3% ?? /usr/src/debug////////glibc-2.17-c758a686/string/../sysdeps/x86_64/multiarch/strcmp-sse42.S:211
+       3   0.8%  98.1%        3   0.8% ?? /usr/src/debug////////glibc-2.17-c758a686/string/../sysdeps/x86_64/multiarch/strcmp-sse42.S:1734
+       3   0.8%  98.9%        3   0.8% ?? /usr/src/debug////////glibc-2.17-c758a686/string/../sysdeps/x86_64/multiarch/strcmp-sse42.S:1734
+       1   0.3%  99.2%        1   0.3% ?? /usr/src/debug////////glibc-2.17-c758a686/string/../sysdeps/x86_64/multiarch/strcmp-sse42.S:212
+       1   0.3%  99.5%        1   0.3% 0x00007ffde62f5902
+       1   0.3%  99.7%        1   0.3% SortedList_delete
+       1   0.3% 100.0%        1   0.3% hash
+       0   0.0% 100.0%      376 100.0% ?? /usr/src/debug////////glibc-2.17-c758a686/misc/../sysdeps/unix/sysv/linux/x86_64/clone.S:118
+       0   0.0% 100.0%        1   0.3% __GI___clock_gettime
+       0   0.0% 100.0%      376 100.0% start_thread
+ROUTINE ====================== routine in /u/eng/class/classnue/week6/lab2_list.c
+   301    376 Total samples (flat / cumulative)
+     .      .   40:     return (key_value*100) % num_lists;
+     .      .   41: }
+     .      .   42: 
+     .      .   43: 
+     .      .   44: 
+---
+     .      .   45: void* routine(void* p){
+     .      .   46:     int head = *((int*)p);
+     .      .   47:     int length=0;
+     .      .   48:     long wait_time = 0;
+     .      .   49:     struct timespec begin, end;
+     .      .   50:         switch(sync_opion){
+     .      .   51:             case 'm':
+     .      .   52:                 for(long i = head*num_iterations; i < (head+1)*num_iterations; i++){
+     .      .   53:                     long hash_value=hash(elements[i].key);
+     .      .   54:                     if(clock_gettime(CLOCK_MONOTONIC, &begin)<0){
+     .      .   55:                         fprintf(stderr, "Error: failed to get the starting time %s\n", strerror(errno));
+     .      .   56:                         exit(1);
+     .      .   57:                     }
+     .      .   58:                     pthread_mutex_lock(mutex+hash_value);
+     .      .   59:                     if(clock_gettime(CLOCK_MONOTONIC, &end)<0){
+     .      .   60:                         fprintf(stderr, "Error: failed to get the ending time %s\n", strerror(errno));
+     .      .   61:                         exit(1);
+     .      .   62:                     }
+     .      .   63:                     SortedList_insert(lists+hash_value, &elements[i]);
+     .      .   64:                     pthread_mutex_unlock(mutex+hash_value);
+     .      .   65:                     wait_time += 1000000000 * (end.tv_sec - begin.tv_sec) + end.tv_nsec - begin.tv_nsec;
+     .      .   66:                     
+     .      .   67:                 }
+     .      .   68:                 
+     .      .   69:                 for(long i=0;i<num_lists;i++){
+     .      .   70:                     if(clock_gettime(CLOCK_MONOTONIC, &begin)<0){
+     .      .   71:                         fprintf(stderr, "Error: failed to get the starting time %s\n", strerror(errno));
+     .      .   72:                         exit(1);
+     .      .   73:                     }
+     .      .   74:                     pthread_mutex_lock(mutex+i);
+     .      .   75:                     if(clock_gettime(CLOCK_MONOTONIC, &end)<0){
+     .      .   76:                         fprintf(stderr, "Error: failed to get the ending time %s\n", strerror(errno));
+     .      .   77:                         exit(1);
+     .      .   78:                     }
+     .      .   79:                     length += SortedList_length(lists+i);
+     .      .   80:                     pthread_mutex_unlock(mutex+i);
+     .      .   81:                     wait_time += 1000000000 * (end.tv_sec - begin.tv_sec) + end.tv_nsec - begin.tv_nsec;
+     .      .   82: 
+     .      .   83:                     if(SortedList_length(lists+i) < 0){
+     .      .   84:                             fprintf(stderr, "Error: corrupted list %s\n", strerror(errno));
+     .      .   85:                             exit(2);
+     .      .   86:                     }
+     .      .   87:                 }
+     .      .   88: 
+     .      .   89:                 
+     .      .   90:                 for(long i = head*num_iterations; i < (head+1)*num_iterations; i++){
+     .      .   91:                     long hash_value=hash(elements[i].key);
+     .      .   92:                     if(clock_gettime(CLOCK_MONOTONIC, &begin)<0){
+     .      .   93:                         fprintf(stderr, "Error: failed to get the starting time %s\n", strerror(errno));
+     .      .   94:                         exit(1);
+     .      .   95:                     }
+     .      .   96:                     pthread_mutex_lock(mutex+hash_value);
+     .      .   97:                     if(clock_gettime(CLOCK_MONOTONIC, &end)<0){
+     .      .   98:                         fprintf(stderr, "Error: failed to get the ending time %s\n", strerror(errno));
+     .      .   99:                         exit(1);
+     .      .  100:                     }
+     .      .  101:                     
+     .      .  102:                     
+     .      .  103:                     SortedListElement_t* look_up_element = SortedList_lookup(lists+hash_value, elements[i].key);
+     .      .  104:                     
+     .      .  105:                     if(look_up_element == NULL){
+     .      .  106:                         fprintf(stderr, "Error: failed to look up the specified element: %s\n", strerror(errno));
+     .      .  107:                         exit(2);
+     .      .  108:                     }
+     .      .  109:                 
+     .      .  110:                     if(SortedList_delete(look_up_element) != 0){
+     .      .  111:                         fprintf(stderr, "Error:failed to deleted the specified element: %s\n", strerror(errno));
+     .      .  112:                         exit(2);
+     .      .  113:                     }
+     .      .  114:                     pthread_mutex_unlock(mutex + hash_value);
+     .      .  115:                     wait_time += 1000000000 * (end.tv_sec - begin.tv_sec) + end.tv_nsec - begin.tv_nsec;
+     .      .  116:                 }
+     .      .  117:                 
+     .      .  118:                 break;
+     .      .  119:             case 's':
+     .      .  120:                 for(long i = head*num_iterations; i < (head+1)*num_iterations; i++){
+     .      1  121:                     long hash_value=hash(elements[i].key);
+     .      .  122:                     if(clock_gettime(CLOCK_MONOTONIC, &begin)<0){
+     .      .  123:                         fprintf(stderr, "Error: failed to get the starting time %s\n", strerror(errno));
+     .      .  124:                         exit(1);
+     .      .  125:                     }
+   185    185  126:                     while (__sync_lock_test_and_set(spin_lock + hash_value, 1));
+     .      1  127:                     if(clock_gettime(CLOCK_MONOTONIC, &end)<0){
+     .      .  128:                         fprintf(stderr, "Error: failed to get the ending time %s\n", strerror(errno));
+     .      .  129:                         exit(1);
+     .      .  130:                     }
+     .     72  131:                     SortedList_insert(lists+hash_value, &elements[i]);
+     .      .  132:                     __sync_lock_release(spin_lock + hash_value);
+     .      .  133:                     wait_time += 1000000000 * (end.tv_sec - begin.tv_sec) + end.tv_nsec - begin.tv_nsec;
+     .      .  134:                     
+     .      .  135:                 }
+     .      .  136:                 
+     .      .  137:                 for(long i=0;i<num_lists;i++){
+     .      .  138:                     if(clock_gettime(CLOCK_MONOTONIC, &begin)<0){
+     .      .  139:                         fprintf(stderr, "Error: failed to get the starting time %s\n", strerror(errno));
+     .      .  140:                         exit(1);
+     .      .  141:                     }
+     1      1  142:                     while (__sync_lock_test_and_set(spin_lock + i, 1));
+     .      .  143:                     if(clock_gettime(CLOCK_MONOTONIC, &end)<0){
+     .      .  144:                         fprintf(stderr, "Error: failed to get the ending time %s\n", strerror(errno));
+     .      .  145:                         exit(1);
+     .      .  146:                     }
+     .      .  147:                     length += SortedList_length(lists+i);
+     .      .  148:                     __sync_lock_release(spin_lock + i);
+     .      .  149:                     wait_time += 1000000000 * (end.tv_sec - begin.tv_sec) + end.tv_nsec - begin.tv_nsec;
+     .      .  150: 
+     .      .  151:                     if(SortedList_length(lists+i) < 0){
+     .      .  152:                             fprintf(stderr, "Error: corrupted list %s\n", strerror(errno));
+     .      .  153:                             exit(2);
+     .      .  154:                     }
+     .      .  155:                 }
+     .      .  156:                 
+     .      .  157:                 
+     .      .  158:                 for(long i = head*num_iterations; i < (head+1)*num_iterations; i++){
+     .      .  159:                     long hash_value=hash(elements[i].key);
+     .      .  160:                     if(clock_gettime(CLOCK_MONOTONIC, &begin)<0){
+     .      .  161:                         fprintf(stderr, "Error: failed to get the starting time %s\n", strerror(errno));
+     .      .  162:                         exit(1);
+     .      .  163:                     }
+   115    115  164:                     while (__sync_lock_test_and_set(spin_lock + hash_value, 1));
+     .      .  165:                     if(clock_gettime(CLOCK_MONOTONIC, &end)<0){
+     .      .  166:                         fprintf(stderr, "Error: failed to get the ending time %s\n", strerror(errno));
+     .      .  167:                         exit(1);
+     .      .  168:                     }
+     .      .  169:                     
+     .      .  170:                     
+     .      .  171:                     SortedListElement_t* look_up_element = SortedList_lookup(lists+hash_value, elements[i].key);
+     .      .  172:                     
+     .      .  173:                     if(look_up_element == NULL){
+     .      .  174:                         fprintf(stderr, "Error: failed to look up the specified element: %s\n", strerror(errno));
+     .      .  175:                         exit(2);
+     .      .  176:                     }
+     .      .  177:                 
+     .      1  178:                     if(SortedList_delete(look_up_element) != 0){
+     .      .  179:                         fprintf(stderr, "Error:failed to deleted the specified element: %s\n", strerror(errno));
+     .      .  180:                         exit(2);
+     .      .  181:                     }
+     .      .  182:                     __sync_lock_release(spin_lock + hash_value);
+     .      .  183:                     wait_time += 1000000000 * (end.tv_sec - begin.tv_sec) + end.tv_nsec - begin.tv_nsec;
+     .      .  184:                 }
+     .      .  185:                 
+     .      .  186:                 break;
+     .      .  187:             default:
+     .      .  188:                 for(long i = head*num_iterations; i < (head+1)*num_iterations; i++){
+     .      .  189:                     long hash_value=hash(elements[i].key);
+     .      .  190:                     SortedList_insert(lists+hash_value, &elements[i]);
+     .      .  191:                 }
+     .      .  192:                 
+     .      .  193:                 for(long i=0;i<num_lists;i++){
+     .      .  194:                     length += SortedList_length(lists+i);
+     .      .  195:                     if(SortedList_length(lists+i) < 0){
+     .      .  196:                             fprintf(stderr, "Error: corrupted list %s\n", strerror(errno));
+     .      .  197:                             exit(2);
+     .      .  198:                     }
+     .      .  199:                 }
+     .      .  200: 
+     .      .  201:                 
+     .      .  202:                 for(long i = head*num_iterations; i < (head+1)*num_iterations; i++){
+     .      .  203:                     long hash_value=hash(elements[i].key);
+     .      .  204:                     SortedListElement_t* look_up_element = SortedList_lookup(lists+hash_value, elements[i].key);
+     .      .  205:                     
+     .      .  206:                     if(look_up_element == NULL){
+     .      .  207:                         fprintf(stderr, "Error: failed to look up the specified element: %s\n", strerror(errno));
+     .      .  208:                         exit(2);
+     .      .  209:                     }
+     .      .  210: 
+     .      .  211:                     if(SortedList_delete(look_up_element) != 0){
+     .      .  212:                         fprintf(stderr, "Error:failed to deleted the specified element: %s\n", strerror(errno));
+     .      .  213:                         exit(2);
+     .      .  214:                     }
+     .      .  215:                 }
+     .      .  216:                 
+     .      .  217:                 break;
+     .      .  218:                 
+     .      .  219:         }
+     .      .  220:     
+     .      .  221:     return (void*)wait_time;
+     .      .  222: }
+---
+     .      .  223: 
+     .      .  224: 
+     .      .  225: 
+     .      .  226: 
+     .      .  227: int main(int argc, char* argv[]) {
+ROUTINE ====================== routine in /u/eng/class/classnue/week6/lab2_list.c
+   301    376 Total samples (flat / cumulative)
+     .      .   40:     return (key_value*100) % num_lists;
+     .      .   41: }
+     .      .   42: 
+     .      .   43: 
+     .      .   44: 
+---
+     .      .   45: void* routine(void* p){
+     .      .   46:     int head = *((int*)p);
+     .      .   47:     int length=0;
+     .      .   48:     long wait_time = 0;
+     .      .   49:     struct timespec begin, end;
+     .      .   50:         switch(sync_opion){
+     .      .   51:             case 'm':
+     .      .   52:                 for(long i = head*num_iterations; i < (head+1)*num_iterations; i++){
+     .      .   53:                     long hash_value=hash(elements[i].key);
+     .      .   54:                     if(clock_gettime(CLOCK_MONOTONIC, &begin)<0){
+     .      .   55:                         fprintf(stderr, "Error: failed to get the starting time %s\n", strerror(errno));
+     .      .   56:                         exit(1);
+     .      .   57:                     }
+     .      .   58:                     pthread_mutex_lock(mutex+hash_value);
+     .      .   59:                     if(clock_gettime(CLOCK_MONOTONIC, &end)<0){
+     .      .   60:                         fprintf(stderr, "Error: failed to get the ending time %s\n", strerror(errno));
+     .      .   61:                         exit(1);
+     .      .   62:                     }
+     .      .   63:                     SortedList_insert(lists+hash_value, &elements[i]);
+     .      .   64:                     pthread_mutex_unlock(mutex+hash_value);
+     .      .   65:                     wait_time += 1000000000 * (end.tv_sec - begin.tv_sec) + end.tv_nsec - begin.tv_nsec;
+     .      .   66:                     
+     .      .   67:                 }
+     .      .   68:                 
+     .      .   69:                 for(long i=0;i<num_lists;i++){
+     .      .   70:                     if(clock_gettime(CLOCK_MONOTONIC, &begin)<0){
+     .      .   71:                         fprintf(stderr, "Error: failed to get the starting time %s\n", strerror(errno));
+     .      .   72:                         exit(1);
+     .      .   73:                     }
+     .      .   74:                     pthread_mutex_lock(mutex+i);
+     .      .   75:                     if(clock_gettime(CLOCK_MONOTONIC, &end)<0){
+     .      .   76:                         fprintf(stderr, "Error: failed to get the ending time %s\n", strerror(errno));
+     .      .   77:                         exit(1);
+     .      .   78:                     }
+     .      .   79:                     length += SortedList_length(lists+i);
+     .      .   80:                     pthread_mutex_unlock(mutex+i);
+     .      .   81:                     wait_time += 1000000000 * (end.tv_sec - begin.tv_sec) + end.tv_nsec - begin.tv_nsec;
+     .      .   82: 
+     .      .   83:                     if(SortedList_length(lists+i) < 0){
+     .      .   84:                             fprintf(stderr, "Error: corrupted list %s\n", strerror(errno));
+     .      .   85:                             exit(2);
+     .      .   86:                     }
+     .      .   87:                 }
+     .      .   88: 
+     .      .   89:                 
+     .      .   90:                 for(long i = head*num_iterations; i < (head+1)*num_iterations; i++){
+     .      .   91:                     long hash_value=hash(elements[i].key);
+     .      .   92:                     if(clock_gettime(CLOCK_MONOTONIC, &begin)<0){
+     .      .   93:                         fprintf(stderr, "Error: failed to get the starting time %s\n", strerror(errno));
+     .      .   94:                         exit(1);
+     .      .   95:                     }
+     .      .   96:                     pthread_mutex_lock(mutex+hash_value);
+     .      .   97:                     if(clock_gettime(CLOCK_MONOTONIC, &end)<0){
+     .      .   98:                         fprintf(stderr, "Error: failed to get the ending time %s\n", strerror(errno));
+     .      .   99:                         exit(1);
+     .      .  100:                     }
+     .      .  101:                     
+     .      .  102:                     
+     .      .  103:                     SortedListElement_t* look_up_element = SortedList_lookup(lists+hash_value, elements[i].key);
+     .      .  104:                     
+     .      .  105:                     if(look_up_element == NULL){
+     .      .  106:                         fprintf(stderr, "Error: failed to look up the specified element: %s\n", strerror(errno));
+     .      .  107:                         exit(2);
+     .      .  108:                     }
+     .      .  109:                 
+     .      .  110:                     if(SortedList_delete(look_up_element) != 0){
+     .      .  111:                         fprintf(stderr, "Error:failed to deleted the specified element: %s\n", strerror(errno));
+     .      .  112:                         exit(2);
+     .      .  113:                     }
+     .      .  114:                     pthread_mutex_unlock(mutex + hash_value);
+     .      .  115:                     wait_time += 1000000000 * (end.tv_sec - begin.tv_sec) + end.tv_nsec - begin.tv_nsec;
+     .      .  116:                 }
+     .      .  117:                 
+     .      .  118:                 break;
+     .      .  119:             case 's':
+     .      .  120:                 for(long i = head*num_iterations; i < (head+1)*num_iterations; i++){
+     .      1  121:                     long hash_value=hash(elements[i].key);
+     .      .  122:                     if(clock_gettime(CLOCK_MONOTONIC, &begin)<0){
+     .      .  123:                         fprintf(stderr, "Error: failed to get the starting time %s\n", strerror(errno));
+     .      .  124:                         exit(1);
+     .      .  125:                     }
+   185    185  126:                     while (__sync_lock_test_and_set(spin_lock + hash_value, 1));
+     .      1  127:                     if(clock_gettime(CLOCK_MONOTONIC, &end)<0){
+     .      .  128:                         fprintf(stderr, "Error: failed to get the ending time %s\n", strerror(errno));
+     .      .  129:                         exit(1);
+     .      .  130:                     }
+     .     72  131:                     SortedList_insert(lists+hash_value, &elements[i]);
+     .      .  132:                     __sync_lock_release(spin_lock + hash_value);
+     .      .  133:                     wait_time += 1000000000 * (end.tv_sec - begin.tv_sec) + end.tv_nsec - begin.tv_nsec;
+     .      .  134:                     
+     .      .  135:                 }
+     .      .  136:                 
+     .      .  137:                 for(long i=0;i<num_lists;i++){
+     .      .  138:                     if(clock_gettime(CLOCK_MONOTONIC, &begin)<0){
+     .      .  139:                         fprintf(stderr, "Error: failed to get the starting time %s\n", strerror(errno));
+     .      .  140:                         exit(1);
+     .      .  141:                     }
+     1      1  142:                     while (__sync_lock_test_and_set(spin_lock + i, 1));
+     .      .  143:                     if(clock_gettime(CLOCK_MONOTONIC, &end)<0){
+     .      .  144:                         fprintf(stderr, "Error: failed to get the ending time %s\n", strerror(errno));
+     .      .  145:                         exit(1);
+     .      .  146:                     }
+     .      .  147:                     length += SortedList_length(lists+i);
+     .      .  148:                     __sync_lock_release(spin_lock + i);
+     .      .  149:                     wait_time += 1000000000 * (end.tv_sec - begin.tv_sec) + end.tv_nsec - begin.tv_nsec;
+     .      .  150: 
+     .      .  151:                     if(SortedList_length(lists+i) < 0){
+     .      .  152:                             fprintf(stderr, "Error: corrupted list %s\n", strerror(errno));
+     .      .  153:                             exit(2);
+     .      .  154:                     }
+     .      .  155:                 }
+     .      .  156:                 
+     .      .  157:                 
+     .      .  158:                 for(long i = head*num_iterations; i < (head+1)*num_iterations; i++){
+     .      .  159:                     long hash_value=hash(elements[i].key);
+     .      .  160:                     if(clock_gettime(CLOCK_MONOTONIC, &begin)<0){
+     .      .  161:                         fprintf(stderr, "Error: failed to get the starting time %s\n", strerror(errno));
+     .      .  162:                         exit(1);
+     .      .  163:                     }
+   115    115  164:                     while (__sync_lock_test_and_set(spin_lock + hash_value, 1));
+     .      .  165:                     if(clock_gettime(CLOCK_MONOTONIC, &end)<0){
+     .      .  166:                         fprintf(stderr, "Error: failed to get the ending time %s\n", strerror(errno));
+     .      .  167:                         exit(1);
+     .      .  168:                     }
+     .      .  169:                     
+     .      .  170:                     
+     .      .  171:                     SortedListElement_t* look_up_element = SortedList_lookup(lists+hash_value, elements[i].key);
+     .      .  172:                     
+     .      .  173:                     if(look_up_element == NULL){
+     .      .  174:                         fprintf(stderr, "Error: failed to look up the specified element: %s\n", strerror(errno));
+     .      .  175:                         exit(2);
+     .      .  176:                     }
+     .      .  177:                 
+     .      1  178:                     if(SortedList_delete(look_up_element) != 0){
+     .      .  179:                         fprintf(stderr, "Error:failed to deleted the specified element: %s\n", strerror(errno));
+     .      .  180:                         exit(2);
+     .      .  181:                     }
+     .      .  182:                     __sync_lock_release(spin_lock + hash_value);
+     .      .  183:                     wait_time += 1000000000 * (end.tv_sec - begin.tv_sec) + end.tv_nsec - begin.tv_nsec;
+     .      .  184:                 }
+     .      .  185:                 
+     .      .  186:                 break;
+     .      .  187:             default:
+     .      .  188:                 for(long i = head*num_iterations; i < (head+1)*num_iterations; i++){
+     .      .  189:                     long hash_value=hash(elements[i].key);
+     .      .  190:                     SortedList_insert(lists+hash_value, &elements[i]);
+     .      .  191:                 }
+     .      .  192:                 
+     .      .  193:                 for(long i=0;i<num_lists;i++){
+     .      .  194:                     length += SortedList_length(lists+i);
+     .      .  195:                     if(SortedList_length(lists+i) < 0){
+     .      .  196:                             fprintf(stderr, "Error: corrupted list %s\n", strerror(errno));
+     .      .  197:                             exit(2);
+     .      .  198:                     }
+     .      .  199:                 }
+     .      .  200: 
+     .      .  201:                 
+     .      .  202:                 for(long i = head*num_iterations; i < (head+1)*num_iterations; i++){
+     .      .  203:                     long hash_value=hash(elements[i].key);
+     .      .  204:                     SortedListElement_t* look_up_element = SortedList_lookup(lists+hash_value, elements[i].key);
+     .      .  205:                     
+     .      .  206:                     if(look_up_element == NULL){
+     .      .  207:                         fprintf(stderr, "Error: failed to look up the specified element: %s\n", strerror(errno));
+     .      .  208:                         exit(2);
+     .      .  209:                     }
+     .      .  210: 
+     .      .  211:                     if(SortedList_delete(look_up_element) != 0){
+     .      .  212:                         fprintf(stderr, "Error:failed to deleted the specified element: %s\n", strerror(errno));
+     .      .  213:                         exit(2);
+     .      .  214:                     }
+     .      .  215:                 }
+     .      .  216:                 
+     .      .  217:                 break;
+     .      .  218:                 
+     .      .  219:         }
+     .      .  220:     
+     .      .  221:     return (void*)wait_time;
+     .      .  222: }
+---
+     .      .  223: 
+     .      .  224: 
+     .      .  225: 
+     .      .  226: 
+     .      .  227: int main(int argc, char* argv[]) {

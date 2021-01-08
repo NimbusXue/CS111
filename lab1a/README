@@ -1,0 +1,19 @@
+NAME: JIAXUAN XUE
+EMAIL: nimbusxue1015@g.ucla.edu
+ID: 705142227
+
+
+Included files:
+
+lab0.c: a single C source module that put the keyboard into non-canonical input mode with no echo. It reads (ASCII) input from the keyboard into a buffer and write the received characters back out to the display. It also supports a --shell option, which utilizes Inter-Process Communication to read (ASCII) input from the keyboard, echo it to stdout, forward it to the shell, read input from the shell pipe and write it to stdout.
+
+Makefile: a Makefile to build the program and the tarball. 
+It supports the following command:
+default: create the executable file lab1a 
+clean: remove all the files created by the Makefile
+dist: create the distribution tarball
+
+
+README: a README file with identification information, a description of the included files and  testing methodology.
+
+Testing methodology: uses both the sanity-check script and manual test with ./lab1a and ./lab1a --shell="/bin/bash" to check the appropriate results as expected.
