@@ -1,0 +1,25 @@
+NAME: JIAXUAN XUE
+EMAIL: nimbusxue1015@g.ucla.edu
+ID: 705142227
+
+
+Included files:
+
+lab1b-client.c: a single C source module that puts the keyboard into non-canonical input mode with no echo. It reads (ASCII) input from the keyboard into a buffer and write the received characters back out to the display and then forward to socket connected to the server. It also supports a --compress option, which reduces the amount of space data takes up. It also supports a --log option, which records the sent and recevied bytes. It has a mandatory port option to ensure connection with the server.
+
+lab1b-server.c: a single C source module that has a shell option to connect the socket input from the client to the shell and forward the output from the shell to the socket. It also supports a --compress option, which reduces the amount of space data takes up. It has a mandatory port option to ensure connection with the client.
+
+
+Makefile: a Makefile to build the program and the tarball. 
+It supports the following command:
+default: create the executable file lab1a 
+client: build the client program
+server: build the server program
+clean: remove all the files created by the Makefile
+dist: create the distribution tarball
+
+
+README: a README file with identification information, a description of the included files and testing methodology.
+
+Testing methodology: uses both the sanity-check script and manual test to check the appropriate results as expected.
+
